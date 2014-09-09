@@ -5,24 +5,27 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 
-public class HTTPServer
-{
+public class HTTPServer {
+
     static int port = 8080;
     static String ip = "127.0.0.1";
 
-    public static void main(String[] args) throws IOException
-    {
-        if (args.length >= 2)
-        {
+    public static void main(String[] args) throws IOException {
+        if (args.length >= 2) {
             ip = args[0];
             port = Integer.parseInt(args[1]);
         }
@@ -30,46 +33,17 @@ public class HTTPServer
         HttpServer server = HttpServer.create(i, 0);
         server.createContext("/welcome", new WelcomeHandler());
         server.createContext("/headers", new HeadersHandler());
-        server.createContext("/pages/", new PagesHandler());
+        server.createContext("/pages/", new PagesHandler("public/"));
         server.setExecutor(null);
 
         server.start();
         System.out.println("The server has started");
     }
 
-    static class PagesHandler implements HttpHandler
-    {
-
-        String contentFolder = "public/";
+    static class HeadersHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange he) throws IOException
-        {
-            File file = new File(contentFolder + "index.html");
-            byte[] bytesToSend = new byte[(int) file.length()];
-            try
-            {
-                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-                bis.read(bytesToSend, 0, bytesToSend.length);
-            } catch (IOException ie)
-            {
-                ie.printStackTrace();
-            }
-            he.sendResponseHeaders(200, bytesToSend.length);
-            try (OutputStream os = he.getResponseBody())
-            {
-                os.write(bytesToSend, 0, bytesToSend.length);
-            }
-        }
-
-    }
-
-    static class HeadersHandler implements HttpHandler
-    {
-
-        @Override
-        public void handle(HttpExchange he) throws IOException
-        {
+        public void handle(HttpExchange he) throws IOException {
             String response;
             StringBuilder sb = new StringBuilder();
 //            Map map = new HashMap();
@@ -95,8 +69,7 @@ public class HTTPServer
             sb.append("</th>");
             sb.append("<th> Value </th></tr>");
             Iterator it = he.getRequestHeaders().entrySet().iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Map.Entry<Integer, Integer> m = (Map.Entry) it.next();
                 sb.append("<tr><th>" + m.getKey() + "</th><th>" + m.getValue() + "</th></tr>");
             }
@@ -109,20 +82,17 @@ public class HTTPServer
             h.add("Content-Type", "text/html");
 
             he.sendResponseHeaders(200, response.length());
-            try (PrintWriter pw = new PrintWriter(he.getResponseBody()))
-            {
+            try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
                 pw.print(response);
             }
         }
 
     }
 
-    static class WelcomeHandler implements HttpHandler
-    {
+    static class WelcomeHandler implements HttpHandler {
 
         @Override
-        public void handle(HttpExchange he) throws IOException
-        {
+        public void handle(HttpExchange he) throws IOException {
             String response;
             StringBuilder sb = new StringBuilder();
             sb.append("<!DOCTYPE html>\n");
@@ -141,8 +111,7 @@ public class HTTPServer
             h.add("Content-Type", "text/html");
 
             he.sendResponseHeaders(200, response.length());
-            try (PrintWriter pw = new PrintWriter(he.getResponseBody()))
-            {
+            try (PrintWriter pw = new PrintWriter(he.getResponseBody())) {
                 pw.print(response);
             }
 
