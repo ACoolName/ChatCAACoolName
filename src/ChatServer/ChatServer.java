@@ -62,13 +62,14 @@ public class ChatServer {
 
     public synchronized void sendAll(String message, ClientHandler handler) {
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
-                entry.getValue().send(message);
+            entry.getValue().send(message);
         }
     }
     
     public synchronized void send(String message, String[] names) {
         for (int i = 0; i < names.length; i++) {
-            clients.get(names[i]).send(message);
+            if(clients.containsKey(names[i]))
+                clients.get(names[i]).send(message);
         }
     }
     
@@ -78,12 +79,16 @@ public class ChatServer {
     }
 
     private void sendNickNameList() {
-        String names = "#list";
+        String names = "";
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
-            names += entry.getKey() + "-";
+            names += entry.getKey() + ",";
+        }
+        if(names.length()!=0)
+        {
+        names=names.substring(0,names.length()-1);
         }
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
-            entry.getValue().send(names);
+            entry.getValue().sendOnlineUsers(names);
         }
     }
 }

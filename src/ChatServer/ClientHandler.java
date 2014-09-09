@@ -9,7 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Shared.ProtocolStrings;
 
-public class ClientHandler extends Thread {
+public class ClientHandler extends Thread
+{
 
     private Scanner input;
     private PrintWriter writer;
@@ -17,11 +18,13 @@ public class ClientHandler extends Thread {
     private ChatServer server;
     private String nickName;
 
-    public String getNickName() {
+    public String getNickName()
+    {
         return nickName;
     }
 
-    public ClientHandler(Socket socket, ChatServer server) throws IOException {
+    public ClientHandler(Socket socket, ChatServer server) throws IOException
+    {
         input = new Scanner(socket.getInputStream());
         writer = new PrintWriter(socket.getOutputStream(), true);
         this.socket = socket;
@@ -29,43 +32,62 @@ public class ClientHandler extends Thread {
 
     }
 
-    public void send(String message) {
-        writer.println(message.toUpperCase());
+    public void send(String message)
+    {
+        writer.println(ProtocolStrings.MESSAGE + nickName + "#" + message);
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO,
                 String.format("Received the message: %1$S ",
                         message.toUpperCase()));
     }
+    
+    public void sendOnlineUsers(String name)
+    {
+        writer.println(ProtocolStrings.ONLINE+name);
+    }
 
-    public void run() {
-        try {
+    public void run()
+    {
+        try
+        {
             String message = input.nextLine(); //IMPORTANT blocking call
-            String[] connect = message.split("#");
-            if (connect[0].equals(ProtocolStrings.CONNECT)) {
-                String name = connect[1];
+           
+            //connect[0]= connect[0]+"#";
+            if (message.length()>8 && message.substring(0,8).equals(ProtocolStrings.CONNECT))
+            {
+                String name = message.substring(8);
                 nickName = name;
                 server.addClientHandler(name, this);
                 message = input.nextLine();
-                while (!message.equals(ProtocolStrings.STOP)) {
+                while (!message.equals(ProtocolStrings.STOP))
+                {
                     String[] send = message.split("#");
-                    if(send[1].equals("*")) {
-                        server.sendAll(message, this);
+                    if (send[1].equals("*"))
+                    {
+                        server.sendAll(send[2], this);
+                    } else
+                    {
+                        String[] names = send[1].split(",");
+                        server.send(send[2], names);
                     }
-                    String[] names = send[1].split(",");
-                    server.send(message, names);
                     //Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
                     message = input.nextLine(); //IMPORTANT blocking call
                 }
             }
 
             writer.println(ProtocolStrings.STOP);//Chat the stop message back to the client for a nice closedown
-            try {
+            try
+            {
                 socket.close();
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (NoSuchElementException ex) {
+        } catch (NoSuchElementException ex)
+        {
             //Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } finally
+        {
+            if(nickName!=null)
             server.removeHandler(this.nickName);
         }
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, "Closed a Connection");
