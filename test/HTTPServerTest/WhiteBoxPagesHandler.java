@@ -16,4 +16,8 @@ public class WhiteBoxPagesHandler extends PagesHandler {
     public String[] parseMimeTypeLinePublic(String line) {
         return parseMimeTypeLine(line);
     }
+    
+    public String getContentTypePublic(String filename) throws IOException {
+        return getContentType(filename);
+    }
 }

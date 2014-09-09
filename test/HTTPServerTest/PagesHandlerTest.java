@@ -1,10 +1,13 @@
 package HTTPServerTest;
 
+import com.sun.net.httpserver.HttpExchange;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,6 +23,8 @@ public class PagesHandlerTest {
 
     @BeforeClass
     public static void setUpClass() throws FileNotFoundException, IOException {
+        String[] args = {"127.0.0.1", "8080"};
+        HTTPServer.HTTPServer.main(args);
         File file = new File("src/assets/mimes");
         mimeTypeLines = 0;
         if (!file.exists()) {
@@ -58,5 +63,19 @@ public class PagesHandlerTest {
         object.loadMimeTypesPublic();
         Map<String, String> results = object.getMimeTypes();
         assertEquals(mimeTypeLines, results.size());
+    }
+    
+    @Test
+    public void getContentTypeTest() throws IOException {
+        WhiteBoxPagesHandler object = new WhiteBoxPagesHandler();
+        String type = object.getContentTypePublic("public/index.html");
+        assertEquals("text/html", type);
+    }
+    
+    @Test
+    public void handleTest() throws IOException{
+        URLConnection connection = new URL("http://localhost:8080/welcome").openConnection();
+        connection.connect();
+        assertEquals("218",connection.getHeaderField(2));
     }
 }
