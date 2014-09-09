@@ -60,16 +60,16 @@ public class ChatServer {
         sendNickNameList();
     }
 
-    public synchronized void sendAll(String message, ClientHandler handler) {
+    public synchronized void sendAll(String message, ClientHandler handler, String nickName) {
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
-            entry.getValue().send(message);
+            entry.getValue().send(message, nickName);
         }
     }
     
-    public synchronized void send(String message, String[] names) {
+    public synchronized void send(String message, String[] names, String nickName) {
         for (int i = 0; i < names.length; i++) {
             if(clients.containsKey(names[i]))
-                clients.get(names[i]).send(message);
+                clients.get(names[i]).send(message, nickName);
         }
     }
     

@@ -5,36 +5,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Shared.ProtocolStrings;
 
+public class View extends javax.swing.JFrame {
 
-public class View extends javax.swing.JFrame 
-{
     private ChatClient client;
     private ChatListener listener;
-    
-    public View() 
-    {
+
+    public View() {
         initComponents();
         client = new ChatClient();
         try {
-            client.connect("acoolname.cloudapp.net", 80);
+            client.connect("localhost", 8080);
         } catch (IOException ex) {
             System.exit(-1);
         }
         listener = new ChatListener() {
 
             @Override
-            public void messageArrived(String data) {
-                
-                if(data.length() > 5 && data.substring(0, 5).equalsIgnoreCase("#list")) {
-                    jTextArea2.setText("");
-                    String[] strings = data.substring(5).split("-");
-                    for (int i = 0; i < strings.length; i++) {
-                        System.out.println(strings[i]);
-                        jTextArea2.append(strings[i] + "\n");
-                    }
+            public void messageArrived(String sender, String data) {
+                jTextArea1.append(sender + ": " + data + "\n");
+            }
+
+            @Override
+            public void userListArrived(String[] userList) {
+                jTextArea2.setText("");
+                for (String userList1 : userList) {
+                    jTextArea2.append(userList1 + "\n");
                 }
-                else
-                    jTextArea1.append(data + "\n");
+
             }
         };
         client.registerChatListener(listener);
@@ -55,6 +52,7 @@ public class View extends javax.swing.JFrame
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -95,6 +93,12 @@ public class View extends javax.swing.JFrame
 
         jLabel2.setText("Users");
 
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,7 +111,8 @@ public class View extends javax.swing.JFrame
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextField2)
                             .addComponent(jButton1)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
+                            .addComponent(jTextField3))
                         .addGap(58, 58, 58)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -132,7 +137,9 @@ public class View extends javax.swing.JFrame
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1)
+                        .addGap(32, 32, 32)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
@@ -152,19 +159,22 @@ public class View extends javax.swing.JFrame
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        client.send(jTextField1.getText());
+        client.send("SEND#" + jTextField3.getText() +"#" + jTextField1.getText());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        client.send("#connect" + jTextField2.getText());
+        client.send("CONNECT#" + jTextField2.getText());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         //client.send(ProtocolStrings.STOP);
     }//GEN-LAST:event_formWindowClosed
 
-    public static void main(String args[]) 
-    {
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -186,10 +196,8 @@ public class View extends javax.swing.JFrame
             java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        java.awt.EventQueue.invokeLater(new Runnable() 
-        {
-            public void run() 
-            {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
                 new View().setVisible(true);
             }
         });
@@ -206,6 +214,7 @@ public class View extends javax.swing.JFrame
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 
 }

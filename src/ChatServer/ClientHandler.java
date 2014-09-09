@@ -29,8 +29,8 @@ public class ClientHandler extends Thread {
 
     }
 
-    public void send(String message) {
-        writer.println(ProtocolStrings.MESSAGE + nickName + "#" + message);
+    public void send(String message, String nick) {
+        writer.println(ProtocolStrings.MESSAGE + nick + "#" + message);
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO,
                 String.format("Received the message: %1$S ",
                         message.toUpperCase()));
@@ -54,10 +54,10 @@ public class ClientHandler extends Thread {
                     String[] send = message.split("#");
                     if (send[0].equals("SEND") && send.length == 3) {
                         if (send[1].equals("*")) {
-                            server.sendAll(send[2], this);
+                            server.sendAll(send[2], this, nickName);
                         } else {
                             String[] names = send[1].split(",");
-                            server.send(send[2], names);
+                            server.send(send[2], names, nickName);
                         }
                         //Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
                         

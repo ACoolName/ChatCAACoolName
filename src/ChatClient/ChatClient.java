@@ -11,12 +11,12 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Shared.ProtocolStrings;
+import java.util.Properties;
+import utils.Utils;
 
 public class ChatClient extends Thread {
 
-    Socket socket;
-    private int port;
-    private InetAddress serverAddress;
+    private Socket socket;
     private Scanner input;
     private PrintWriter output;
     private List<ChatListener> listeners = new ArrayList<>();
@@ -30,15 +30,21 @@ public class ChatClient extends Thread {
     }
 
     private void notifyListeners(String msg) {
-        for (ChatListener l : listeners) {
-            l.messageArrived(msg);
+        System.out.println(msg);
+        String[] protocolCrap = msg.split("#");
+        if (protocolCrap[0].equals("ONLINE")) {
+            for (ChatListener l : listeners) {
+                l.userListArrived(protocolCrap[1].split(","));
+            }
+        } else if (protocolCrap[0].equals("MESSAGE") && protocolCrap.length == 3) {
+           for (ChatListener l : listeners) {
+                l.messageArrived(protocolCrap[1], protocolCrap[2]);
+            }
         }
     }
 
     public void connect(String address, int port) throws UnknownHostException, IOException {
-        this.port = port;
-        serverAddress = InetAddress.getByName(address);
-        socket = new Socket(serverAddress, port);
+        socket = new Socket(InetAddress.getByName(address), port);
         input = new Scanner(socket.getInputStream());
         output = new PrintWriter(socket.getOutputStream(), true);  //Set to true, to get auto flush behaviour
     }
@@ -47,11 +53,9 @@ public class ChatClient extends Thread {
         output.println(msg);
     }
 
-    
-    public void stopp() throws IOException {
+    public void stopClient() throws IOException {
         output.println(ProtocolStrings.STOP);
     }
-
 
     @Override
     public void run() {
@@ -70,37 +74,6 @@ public class ChatClient extends Thread {
     }
 
     public static void main(String[] args) {
-        int port = 9090;
-        String ip = "localhost";
-        if (args.length == 2) {
-            port = Integer.parseInt(args[0]);
-            ip = args[1];
-        }
-        try {
-            
-            ChatClient tester = new ChatClient();
-            ChatListener listen = new ChatListener() {
 
-                @Override
-                public void messageArrived(String data) {
-                    System.out.println("Recieved: " + data);
-                }
-            };
-            tester.registerChatListener(listen);
-            tester.connect(ip, port);
-            tester.start();
-            System.out.println("Sending 'Hello world'");
-            tester.send("Hello World");
-            
-            System.out.println("Waiting for a reply");
-            
-             //Important Blocking call         
-            tester.stopp();
-            //System.in.read();      
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }

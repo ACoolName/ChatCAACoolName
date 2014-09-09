@@ -1,5 +1,6 @@
 package ChatClient;
 
 public interface ChatListener {
-    void messageArrived(String data);
+    void messageArrived(String sender, String data);
+    void userListArrived(String[] userList);
 }
