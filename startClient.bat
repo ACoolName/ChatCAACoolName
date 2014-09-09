@@ -1,1 +1,1 @@
-java -cp Echo.jar echoclient.View 8080 localhost
+java -cp ChatCAACoolName.jar ChatClient.View 8080 localhost
