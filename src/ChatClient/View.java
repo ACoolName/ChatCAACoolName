@@ -26,16 +26,12 @@ public class View extends javax.swing.JFrame {
         jPanel2.getRootPane().setDefaultButton(jButtonConnect);
         jTabbedPane1.setSelectedIndex(0);
 
-            @Override
-            public void stopArrived() {
-            }
     }
 
     @SuppressWarnings("unchecked")
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jPanel2 = new javax.swing.JPanel();
@@ -65,18 +61,14 @@ public class View extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(800, 600));
-        addWindowListener(new java.awt.event.WindowAdapter()
-        {
-            public void windowClosed(java.awt.event.WindowEvent evt)
-            {
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
 
-        jPanel2.addKeyListener(new java.awt.event.KeyAdapter()
-        {
-            public void keyPressed(java.awt.event.KeyEvent evt)
-            {
+        jPanel2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
                 jPanel2KeyPressed(evt);
             }
         });
@@ -84,10 +76,8 @@ public class View extends javax.swing.JFrame {
         jLabel1.setText("Server address");
 
         jButtonConnect.setText("Connect");
-        jButtonConnect.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButtonConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonConnectActionPerformed(evt);
             }
         });
@@ -163,18 +153,14 @@ public class View extends javax.swing.JFrame {
         );
 
         jButtonSendMessage.setText("Send");
-        jButtonSendMessage.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
+        jButtonSendMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSendMessageActionPerformed(evt);
             }
         });
 
-        jList1.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList1MouseClicked(evt);
             }
         });
@@ -324,8 +310,9 @@ public class View extends javax.swing.JFrame {
                         //jTextAreaChat.append(sender + " : " + data + "\n");
                         {
                             for (createPanel temp : list) {
-                                if(temp.text.getName().equals(sender))
+                                if (temp.text.getName().equals(sender)) {
                                     temp.returnTextArea(data);
+                                }
                             }
                         }
                     } else {
@@ -353,6 +340,10 @@ public class View extends javax.swing.JFrame {
                 jList1.setModel(display);
 
             }
+
+            @Override
+            public void stopArrived() {
+            }
         };
         client.registerChatListener(listener);
         client.start();
@@ -360,12 +351,12 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonConnectActionPerformed
 
     List<createPanel> list = new ArrayList<>();
-    
+
     private class createPanel {
 
         JPanel p = new JPanel();
-        JTextArea text= new JTextArea();
-        
+        JTextArea text = new JTextArea();
+
         public void createPanel() {
             p.setPreferredSize(new Dimension(164, 94));
             p.setName(jList1.getSelectedValue().toString());
@@ -379,7 +370,7 @@ public class View extends javax.swing.JFrame {
         }
 
         public void returnTextArea(String text) {
-         this.text.append(text+"\n");
+            this.text.append(text + "\n");
         }
     }
 
@@ -387,7 +378,7 @@ public class View extends javax.swing.JFrame {
     {//GEN-HEADEREND:event_jPanel2KeyPressed
         // TODO add your handling code here:
 
-    
+
     }//GEN-LAST:event_jPanel2KeyPressed
 
 
