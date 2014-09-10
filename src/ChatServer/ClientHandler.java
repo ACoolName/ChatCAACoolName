@@ -1,13 +1,15 @@
 package ChatServer;
 
+import Shared.ProtocolStrings;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Shared.ProtocolStrings;
 
 public class ClientHandler extends Thread {
 
@@ -21,11 +23,11 @@ public class ClientHandler extends Thread {
         return nickName;
     }
 
-    public ClientHandler(Socket socket, ChatServer server) throws IOException {
-        input = new Scanner(socket.getInputStream());
-        writer = new PrintWriter(socket.getOutputStream(), true);
-        this.socket = socket;
-        this.server = server;
+    public ClientHandler(Socket incomingSocket, ChatServer incomingServer) throws IOException {
+        input = new Scanner(incomingSocket.getInputStream());
+        writer = new PrintWriter(incomingSocket.getOutputStream(), true);
+        this.socket = incomingSocket;
+        this.server = incomingServer;
 
     }
 
@@ -42,6 +44,8 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
+            Timer timer = new Timer();
+            timer.schedule(new CloseTask(), 1000 * 60 * 15);
             String message = input.nextLine();
             if (message.length() > 8 && message.substring(0, 8).equals(ProtocolStrings.CONNECT)
                     && !message.substring(8).matches("^.*[^a-zA-Z0-9 ].*$")
@@ -49,8 +53,12 @@ public class ClientHandler extends Thread {
                 String name = message.substring(8);
                 nickName = name;
                 server.addClientHandler(name, this);
+                timer = new Timer();
+                timer.schedule(new CloseTask(), 1000 * 60 * 15);
                 message = input.nextLine();
                 while (!message.equals(ProtocolStrings.STOP)) {
+                    timer = new Timer();
+                    timer.schedule(new CloseTask(), 1000 * 60 * 15);
                     String[] send = message.split("#");
                     if (send[0].equals("SEND") && send.length == 3) {
                         if (send[1].equals("*")) {
@@ -60,7 +68,7 @@ public class ClientHandler extends Thread {
                             server.send(send[2], names, nickName);
                         }
                         //Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
-                        
+
                     }
                     message = input.nextLine(); //IMPORTANT blocking call
                 }
@@ -80,5 +88,20 @@ public class ClientHandler extends Thread {
             }
         }
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, "Closed a Connection");
+    }
+
+    public class CloseTask extends TimerTask {
+        @Override
+        public void run() {
+            try {
+                socket.close();
+                if (nickName != null) {
+                    server.removeHandler(nickName);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 }
