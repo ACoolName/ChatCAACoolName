@@ -43,7 +43,9 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             String message = input.nextLine();
-            if (message.length() > 8 && message.substring(0, 8).equals(ProtocolStrings.CONNECT)) {
+            if (message.length() > 8 && message.substring(0, 8).equals(ProtocolStrings.CONNECT)
+                    && !message.substring(8).matches("^.*[^a-zA-Z0-9 ].*$")
+                    && message.substring(8).length() < 12) {
                 String name = message.substring(8);
                 nickName = name;
                 server.addClientHandler(name, this);
