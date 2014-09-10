@@ -42,9 +42,7 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
-            String message = input.nextLine(); //IMPORTANT blocking call
-
-            //connect[0]= connect[0]+"#";
+            String message = input.nextLine();
             if (message.length() > 8 && message.substring(0, 8).equals(ProtocolStrings.CONNECT)) {
                 String name = message.substring(8);
                 nickName = name;
