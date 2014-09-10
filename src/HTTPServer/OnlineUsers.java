@@ -1,5 +1,6 @@
 package HTTPServer;
 
+import ChatServer.ChatServer;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -10,13 +11,15 @@ import java.io.PrintWriter;
 
 public class OnlineUsers implements HttpHandler {
 
-    public OnlineUsers() {
-
+    private ChatServer cs;
+    
+    public OnlineUsers(ChatServer cs) {
+        this.cs = cs;
     }
 
     @Override
     public void handle(HttpExchange he) throws IOException {
-        int onlineUsers = 10;
+        int onlineUsers = cs.getOnlineUsers().size();
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html>\n");
         sb.append("<html>\n");

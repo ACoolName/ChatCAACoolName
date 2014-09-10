@@ -22,14 +22,18 @@ public class ChatServer {
     private static ServerSocket serverSocket;
     private static final Properties properties = Utils.initProperties("server.properties");
     private static Map<String, ClientHandler> clients;
-
+    int port;
+    String ip;
     public ChatServer() {
         clients = new ConcurrentHashMap<>();
-        int port = Integer.parseInt(properties.getProperty("port"));
-        String ip = properties.getProperty("serverIp");
+        port = Integer.parseInt(properties.getProperty("port"));
+        ip = properties.getProperty("serverIp");
         String logFile = properties.getProperty("logFile");
         Utils.setLogFile(logFile, ChatServer.class.getName());
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, "Sever started");
+    }
+
+    public void startServer() {
         try {
             serverSocket = new ServerSocket();
             serverSocket.bind(new InetSocketAddress(ip, port));
@@ -45,7 +49,7 @@ public class ChatServer {
             Utils.closeLogger(ChatServer.class.getName());
         }
     }
-    
+
     public List<String> getOnlineUsers() {
         List<String> nickNames = new ArrayList<>();
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
@@ -73,14 +77,14 @@ public class ChatServer {
             entry.getValue().send(message, nickName);
         }
     }
-    
+
     public synchronized void send(String message, String[] names, String nickName) {
         for (int i = 0; i < names.length; i++) {
-            if(clients.containsKey(names[i]))
+            if (clients.containsKey(names[i])) {
                 clients.get(names[i]).send(message, nickName);
+            }
         }
     }
-    
 
     public static void main(String[] args) {
         ChatServer server = new ChatServer();
@@ -91,9 +95,8 @@ public class ChatServer {
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
             names += entry.getKey() + ",";
         }
-        if(names.length()!=0)
-        {
-        names=names.substring(0,names.length()-1);
+        if (names.length() != 0) {
+            names = names.substring(0, names.length() - 1);
         }
         for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
             entry.getValue().sendOnlineUsers(names);

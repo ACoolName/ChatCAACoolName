@@ -1,0 +1,2 @@
+Sep 10, 2014 11:05:09 AM ChatServer.ChatServer <init>
+INFO: Sever started
