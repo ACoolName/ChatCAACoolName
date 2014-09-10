@@ -343,6 +343,7 @@ public class View extends javax.swing.JFrame
             public void messageArrived(String sender, String data)
             {
                 jTextArea1.append(sender + " : " + data + "\n");
+                
             }
 
             @Override
