@@ -17,6 +17,7 @@ public class HTTPServer {
         HttpServer server = HttpServer.create(i, 0);
         server.createContext("/", new PagesHandler("public/"));
         server.createContext("/Online", new OnlineUsers(cs));
+        server.createContext("/ChatLog", new ChatLog());
         server.setExecutor(null);
         server.start();
     }
