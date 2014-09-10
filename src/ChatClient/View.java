@@ -15,12 +15,14 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-public class View extends javax.swing.JFrame {
+public class View extends javax.swing.JFrame
+{
 
     private ChatClient client;
     private ChatListener listener;
 
-    public View() {
+    public View()
+    {
         initComponents();
         jPanel1.setVisible(false);
         jPanel2.getRootPane().setDefaultButton(jButtonConnect);
@@ -276,9 +278,11 @@ public class View extends javax.swing.JFrame {
     {//GEN-HEADEREND:event_jButtonSendMessageActionPerformed
 
         //if (jList1.getSelectedValue() == null)
-        if (jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()).equals("Global")) {
+        if (jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()).equals("Global"))
+        {
             client.send("SEND#*#" + jTextFieldTextToSend.getText());
-        } else {
+        } else
+        {
 //            int[] index = jList1.getSelectedIndices();
 //            List<String> listOfSelectedValues;
 //            listOfSelectedValues = jList1.getSelectedValuesList();
@@ -303,46 +307,63 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
         client = new ChatClient();
 
-        try {
+        try
+        {
             client.connect(jTextFieldServerAddress.getText(), Integer.parseInt(jTextFieldServerPort.getText()));
             client.send("CONNECT#" + jTextFieldUsername.getText());
             jPanel2.setVisible(false);
             jPanel1.setVisible(true);
-        } catch (IOException ex) {
+        } catch (IOException ex)
+        {
             System.exit(-1);
         }
-        listener = new ChatListener() {
+        listener = new ChatListener()
+        {
 
             @Override
-            public void messageArrived(String sender, String data) {
-                for (int i = 0; i < jTabbedPane1.getTabCount(); i++) {
-                    if (sender.equals(jTabbedPane1.getTitleAt(i))) {
-                        //jTextAreaChat.append(sender + " : " + data + "\n");
+            public void messageArrived(String sender, String data)
+            {
+                if (jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex()).equals("Global")||sender.equals(jTabbedPane1.getTitleAt(jTabbedPane1.getSelectedIndex())))
+                {
+                    jTextAreaChat.append(sender + " : " + data + "\n");
+                } else
+                {
+                    for (int i = 0; i < jTabbedPane1.getTabCount(); i++)
+                    {
+                        if (sender.equals(jTabbedPane1.getTitleAt(i)))
                         {
-                            for (createPanel temp : list) {
-                                if(temp.text.getName().equals(sender))
-                                    temp.returnTextArea(data);
+                            //jTextAreaChat.append(sender + " : " + data + "\n");
+                            {
+                                for (createPanel temp : list)
+                                {
+                                    if (temp.text.getName().equals(sender))
+                                    {
+                                        temp.returnTextArea(data);
+                                    }
+                                }
                             }
+                        } else
+                        {
+                            JPanel p = new JPanel();
+                            p.setPreferredSize(new Dimension(164, 94));
+                            p.setName(sender);
+                            JTextArea text = new JTextArea();
+                            p.add(text);
+                            text.setEditable(false);
+                            text.setPreferredSize(jTabbedPane1.getSize());
+                            text.append(sender + " : " + data + "\n");
+                            jTabbedPane1.addTab(sender, p);
                         }
-                    } else {
-                        JPanel p = new JPanel();
-                        p.setPreferredSize(new Dimension(164, 94));
-                        p.setName(sender);
-                        JTextArea text = new JTextArea();
-                        p.add(text);
-                        text.setEditable(false);
-                        text.setPreferredSize(jTabbedPane1.getSize());
-                        text.append(sender + " : " + data + "\n");
-                        jTabbedPane1.addTab(sender, p);
                     }
                 }
-                jTextAreaChat.append(sender + " : " + data + "\n");
             }
 
             @Override
-            public void userListArrived(String[] userList) {
+            public void userListArrived(String[] userList)
+            {
                 DefaultListModel display = new DefaultListModel();
-                for (String user : userList) {
+                for (String user : userList)
+                {
                     display.addElement(user);
                 }
 
@@ -356,13 +377,15 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonConnectActionPerformed
 
     List<createPanel> list = new ArrayList<>();
-    
-    private class createPanel {
+
+    private class createPanel
+    {
 
         JPanel p = new JPanel();
-        JTextArea text= new JTextArea();
-        
-        public void createPanel() {
+        JTextArea text = new JTextArea();
+
+        public void createPanel()
+        {
             p.setPreferredSize(new Dimension(164, 94));
             p.setName(jList1.getSelectedValue().toString());
             p.add(text);
@@ -374,8 +397,9 @@ public class View extends javax.swing.JFrame {
             System.out.println("WORKS");
         }
 
-        public void returnTextArea(String text) {
-         this.text.append(text+"\n");
+        public void returnTextArea(String text)
+        {
+            this.text.append(text + "\n");
         }
     }
 
@@ -383,16 +407,18 @@ public class View extends javax.swing.JFrame {
     {//GEN-HEADEREND:event_jPanel2KeyPressed
         // TODO add your handling code here:
 
-    
+
     }//GEN-LAST:event_jPanel2KeyPressed
 
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
         // TODO add your handling code here:
-        if (evt.getButton() == MouseEvent.BUTTON3) {
+        if (evt.getButton() == MouseEvent.BUTTON3)
+        {
             jList1.clearSelection();
         }
-        if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1) {
+        if (evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1)
+        {
             System.out.println("THIS");
             createPanel p = new createPanel();
             p.createPanel();
@@ -401,30 +427,40 @@ public class View extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jList1MouseClicked
 
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex)
+        {
             java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        } catch (InstantiationException ex)
+        {
             java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException ex)
+        {
             java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
             java.util.logging.Logger.getLogger(View.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
                 new View().setVisible(true);
             }
         });
