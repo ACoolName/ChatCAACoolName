@@ -16,9 +16,8 @@ public class HTTPServer {
         }
         InetSocketAddress i = new InetSocketAddress(ip, port);
         HttpServer server = HttpServer.create(i, 0);
-        server.createContext("/welcome", new WelcomeHandler());
-        server.createContext("/headers", new HeadersHandler());
-        server.createContext("/pages/", new PagesHandler("public/"));
+        server.createContext("/", new PagesHandler("public/"));
+        server.createContext("/Online", new OnlineUsers());
         server.setExecutor(null);
         server.start();
         System.out.println("The server has started");

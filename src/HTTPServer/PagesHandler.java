@@ -71,8 +71,8 @@ public class PagesHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
         String uri = he.getRequestURI().getPath();
-        uri = uri.substring(7);
-        System.out.println("Handle in pages handler   " + uri);
+        String[] uriArray = uri.split("/");
+        uri = uriArray[uriArray.length - 1];
         String filename = "";
         if ("".equals(uri)) {
             filename = "index.html";
