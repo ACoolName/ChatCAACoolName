@@ -68,14 +68,15 @@ public class PagesHandlerTest {
     @Test
     public void getContentTypeTest() throws IOException {
         WhiteBoxPagesHandler object = new WhiteBoxPagesHandler();
+        object.loadMimeTypesPublic();
         String type = object.getContentTypePublic("public/index.html");
         assertEquals("text/html", type);
     }
     
     @Test
     public void handleTest() throws IOException{
-        URLConnection connection = new URL("http://localhost:8080/welcome").openConnection();
+        URLConnection connection = new URL("http://localhost:8080/pages/").openConnection();
         connection.connect();
-        assertEquals("218",connection.getHeaderField(2));
+        assertEquals(443,connection.getContentLength());
     }
 }

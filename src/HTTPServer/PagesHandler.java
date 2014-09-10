@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import utils.Utility;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -71,6 +72,7 @@ public class PagesHandler implements HttpHandler {
     public void handle(HttpExchange he) throws IOException {
         String uri = he.getRequestURI().getPath();
         uri = uri.substring(7);
+        System.out.println("Handle in pages handler   " + uri);
         String filename = "";
         if ("".equals(uri)) {
             filename = "index.html";
@@ -88,6 +90,7 @@ public class PagesHandler implements HttpHandler {
             String type = "text/html";
             type = getContentType(filename);
             h.add("Content-type", type);
+            System.out.println("Bytes to send length   " + bytesToSend.length + type);
             he.sendResponseHeaders(200, bytesToSend.length);
         } catch (FileNotFoundException fnfe) {
             System.out.println("file " + contentFolder + filename + " not found.");
@@ -103,7 +106,11 @@ public class PagesHandler implements HttpHandler {
     }
 
     protected String getContentType(String filename) throws IOException {
-        Path source = Paths.get(contentFolder + filename);
-        return Files.probeContentType(source);
+        String extension = "";
+        int i = filename.lastIndexOf('.');
+        if (i >= 0) {
+            extension = filename.substring(i);
+        }
+        return mimeTypes.get(extension);
     }
 }

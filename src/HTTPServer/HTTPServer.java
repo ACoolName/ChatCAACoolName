@@ -20,7 +20,6 @@ public class HTTPServer {
         server.createContext("/headers", new HeadersHandler());
         server.createContext("/pages/", new PagesHandler("public/"));
         server.setExecutor(null);
-
         server.start();
         System.out.println("The server has started");
     }
