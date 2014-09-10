@@ -371,6 +371,7 @@ public class View extends javax.swing.JFrame {
             text.setPreferredSize(jTabbedPane1.getSize());
             jTabbedPane1.addTab(jList1.getSelectedValue().toString(), p);
             System.out.println("THERE");
+            System.out.println("WORKS");
         }
 
         public void returnTextArea(String text) {
