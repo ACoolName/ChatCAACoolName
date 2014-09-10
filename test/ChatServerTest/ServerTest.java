@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import org.junit.After;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,6 +31,11 @@ public class ServerTest {
                 ChatServer.main(null);
             }
         }).start();
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        ChatServer.stopServer();
     }
 
     @Before
@@ -82,6 +88,5 @@ public class ServerTest {
         String s = input.nextLine();
         assertEquals("CLOSE#", s);
     }
-
 
 }

@@ -45,6 +45,14 @@ public class ChatServer {
             Utils.closeLogger(ChatServer.class.getName());
         }
     }
+    
+    public List<String> getOnlineUsers() {
+        List<String> nickNames = new ArrayList<>();
+        for (Map.Entry<String, ClientHandler> entry : clients.entrySet()) {
+            nickNames.add(entry.getKey());
+        }
+        return nickNames;
+    }
 
     public void addClientHandler(String name, ClientHandler ch) {
         clients.put(name, ch);

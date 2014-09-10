@@ -33,6 +33,10 @@ public class View extends javax.swing.JFrame {
                 }
 
             }
+
+            @Override
+            public void stopArrived() {
+            }
         };
         client.registerChatListener(listener);
         client.start();

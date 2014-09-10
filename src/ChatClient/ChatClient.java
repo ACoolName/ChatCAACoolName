@@ -37,8 +37,12 @@ public class ChatClient extends Thread {
                 l.userListArrived(protocolCrap[1].split(","));
             }
         } else if (protocolCrap[0].equals("MESSAGE") && protocolCrap.length == 3) {
-           for (ChatListener l : listeners) {
+            for (ChatListener l : listeners) {
                 l.messageArrived(protocolCrap[1], protocolCrap[2]);
+            }
+        } else if (protocolCrap[0].equals("CLOSE")) {
+            for (ChatListener l : listeners) {
+                l.stopArrived();
             }
         }
     }
@@ -64,7 +68,7 @@ public class ChatClient extends Thread {
             notifyListeners(msg);
             msg = input.nextLine();
         }
-
+        notifyListeners(ProtocolStrings.STOP);
         try {
             socket.close();
         } catch (IOException ex) {
