@@ -76,7 +76,7 @@ public class ChatClientTest {
         latch.await(1000, TimeUnit.MILLISECONDS);
         assertEquals("STOP", msg);
     }
-    
+
     @Test
     public void testConnect() throws IOException, InterruptedException {
         latch = new CountDownLatch(1);
@@ -106,14 +106,18 @@ public class ChatClientTest {
 
         assertEquals("User", msg);
     }
-    
-    
-    @Test (expected = IOException.class)
+
+    @Test(expected = IOException.class)
     public void testConnectWrongPort() throws IOException, InterruptedException {
         client.connect(ip, 9999);
     }
-    
-     @Test
+
+    @Test(expected = IOException.class)
+    public void testConnectWrongIP() throws IOException, InterruptedException {
+        client.connect("fakewebsite", 8080);
+    }
+
+    @Test
     public void testConnectTwoUsers() throws IOException, InterruptedException {
         latch = new CountDownLatch(2);
 
@@ -146,6 +150,80 @@ public class ChatClientTest {
         latch.await(1000, TimeUnit.MILLISECONDS);
         clientTwo.stopClient();
         assertEquals(2, size);
+    }
+
+    @Test
+    public void testConnectTwoUsersMessaging() throws IOException, InterruptedException {
+        latch = new CountDownLatch(1);
+
+        ChatListener listen = new ChatListener() {
+
+            @Override
+            public void messageArrived(String sender, String data) {
+                msg = data;
+                latch.countDown();
+            }
+
+            @Override
+            public void userListArrived(String[] userList) {
+                size = userList.length;
+
+            }
+
+            @Override
+            public void stopArrived() {
+            }
+
+        };
+        client.connect(ip, port);
+        ChatClient clientTwo = new ChatClient();
+        clientTwo.connect(ip, port);
+        client.registerChatListener(listen);
+        client.start();
+        client.send("CONNECT#User");
+        clientTwo.send("CONNECT#UserTwo");
+        clientTwo.send("SEND#*#Message");
+        clientTwo.start();
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        clientTwo.stopClient();
+        assertEquals("Message", msg);
+    }
+
+    @Test
+    public void testConnectTwoUsersMessagingGetUserName() throws IOException, InterruptedException {
+        latch = new CountDownLatch(1);
+
+        ChatListener listen = new ChatListener() {
+
+            @Override
+            public void messageArrived(String sender, String data) {
+                msg = sender;
+                latch.countDown();
+            }
+
+            @Override
+            public void userListArrived(String[] userList) {
+                size = userList.length;
+
+            }
+
+            @Override
+            public void stopArrived() {
+            }
+
+        };
+        client.connect(ip, port);
+        ChatClient clientTwo = new ChatClient();
+        clientTwo.connect(ip, port);
+        client.registerChatListener(listen);
+        client.start();
+        client.send("CONNECT#User");
+        clientTwo.send("CONNECT#UserTwo");
+        clientTwo.send("SEND#*#Message");
+        clientTwo.start();
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        clientTwo.stopClient();
+        assertEquals("UserTwo", msg);
     }
 
     @Test
