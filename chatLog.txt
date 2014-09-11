@@ -1,2 +1,10 @@
-Sep 11, 2014 10:36:46 AM ChatServer.ChatServer <init>
+Sep 11, 2014 11:59:08 AM ChatServer.ChatServer <init>
 INFO: Sever started
+Sep 11, 2014 11:59:37 AM ChatServer.ChatServer startServer
+INFO: Connected to a client
+Sep 11, 2014 11:59:43 AM ChatServer.ClientHandler send
+INFO: Received the message: DSFDF 
+Sep 11, 2014 12:00:35 PM ChatServer.ClientHandler send
+INFO: Received the message: </BR><A HREF=CHATCLIENT.JAR>DOWNLOAD CHAT CLIENT</A> 
+Sep 11, 2014 12:00:56 PM ChatServer.ClientHandler run
+INFO: Closed a Connection
