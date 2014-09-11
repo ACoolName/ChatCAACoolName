@@ -10,6 +10,5 @@ public class StartServers
         ChatServer chatServer = new ChatServer();
         HTTPServer httpServer = new HTTPServer(chatServer);
         chatServer.startServer();
-        
     }
 }

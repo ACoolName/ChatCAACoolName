@@ -28,7 +28,8 @@ public class HTTPServer {
             ip = args[0];
             port = Integer.parseInt(args[1]);
         }
-        
+        ChatServer chatsrv = new ChatServer();
+        HTTPServer httpsrv = new HTTPServer(chatsrv);
     }
 
     
