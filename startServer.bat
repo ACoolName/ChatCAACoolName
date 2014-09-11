@@ -1,1 +1,1 @@
-java -cp ChatCAACoolName.jar ChatServer.ChatServer
+java -cp ChatCAACoolName.jar Shared.StartServers

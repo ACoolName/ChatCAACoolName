@@ -11,8 +11,6 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Shared.ProtocolStrings;
-import java.util.Properties;
-import utils.Utils;
 
 public class ChatClient extends Thread {
 

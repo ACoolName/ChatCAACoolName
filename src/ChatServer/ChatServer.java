@@ -1,8 +1,6 @@
 package ChatServer;
 
-import Shared.ProtocolStrings;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +85,7 @@ public class ChatServer {
 
     public static void main(String[] args) {
         ChatServer server = new ChatServer();
+        server.startServer();
     }
 
     private void sendNickNameList() {

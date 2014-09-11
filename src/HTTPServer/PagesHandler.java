@@ -11,18 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import utils.Utility;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class PagesHandler implements HttpHandler {
 
     String contentFolder = "public/";
-    private String mimeTypesFilename = "src/assets/mimes";
+    private String mimeTypesFilename = "mimes.txt"; 
     private Map<String, String> mimeTypes = new HashMap();
 
     public PagesHandler(String contentFolder) throws IOException {

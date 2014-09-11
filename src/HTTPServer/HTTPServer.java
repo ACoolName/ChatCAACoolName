@@ -7,8 +7,8 @@ import java.net.InetSocketAddress;
 
 public class HTTPServer {
 
-    static int port = 9090;
-    static String ip = "127.0.0.1";
+    static int port = 8080;
+    static String ip = "100.85.90.76";
     ChatServer cs;
     public HTTPServer(ChatServer cs) throws IOException {
         System.out.println("The server has started");

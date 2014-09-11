@@ -10,6 +10,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 public class ClientHandler extends Thread {
 
@@ -35,7 +37,7 @@ public class ClientHandler extends Thread {
         writer.println(ProtocolStrings.MESSAGE + nick + "#" + message);
         Logger.getLogger(ChatServer.class.getName()).log(Level.INFO,
                 String.format("Received the message: %1$S ",
-                        message.toUpperCase()));
+                        message));
     }
 
     public void sendOnlineUsers(String name) {
@@ -48,7 +50,7 @@ public class ClientHandler extends Thread {
             timer.schedule(new CloseTask(), 1000 * 60 * 15);
             String message = "";
             try {
-                message = input.nextLine();
+                message = nextLineProtected();
             } catch (OutOfMemoryError x) {
                 writer.println(ProtocolStrings.STOP);
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, x);
@@ -68,7 +70,7 @@ public class ClientHandler extends Thread {
                 server.addClientHandler(name, this);
                 timer = new Timer();
                 timer.schedule(new CloseTask(), 1000 * 60 * 15);
-                message = input.nextLine();
+                message = nextLineProtected();
                 while (!message.equals(ProtocolStrings.STOP)) {
                     timer.cancel();
                     timer = new Timer();
@@ -85,7 +87,7 @@ public class ClientHandler extends Thread {
                         //Logger.getLogger(ChatServer.class.getName()).log(Level.INFO, String.format("Received the message: %1$S ", message));
 
                     }
-                    message = input.nextLine(); //IMPORTANT blocking call
+                    message = nextLineProtected(); //IMPORTANT blocking call
                 }
             }
 
@@ -119,5 +121,22 @@ public class ClientHandler extends Thread {
             }
         }
 
+    }
+
+    private String nextLineProtected() {
+        String message = "";
+        try {
+            message = input.nextLine();
+            message = Jsoup.clean(message, Whitelist.none());
+        } catch (OutOfMemoryError x) {
+            writer.println(ProtocolStrings.STOP);
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, x);
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return message;
     }
 }
