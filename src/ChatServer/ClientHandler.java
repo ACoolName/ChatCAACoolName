@@ -46,10 +46,23 @@ public class ClientHandler extends Thread {
         try {
             Timer timer = new Timer();
             timer.schedule(new CloseTask(), 1000 * 60 * 15);
-            String message = input.nextLine();
+            String message = "";
+            try {
+                message = input.nextLine();
+            } catch (OutOfMemoryError x) {
+                writer.println(ProtocolStrings.STOP);
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, x);
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
             if (message.length() > 8 && message.substring(0, 8).equals(ProtocolStrings.CONNECT)
                     && !message.substring(8).matches("^.*[^a-zA-Z0-9 ].*$")
                     && message.substring(8).length() < 12) {
+                timer.cancel();
                 String name = message.substring(8);
                 nickName = name;
                 server.addClientHandler(name, this);
@@ -57,10 +70,12 @@ public class ClientHandler extends Thread {
                 timer.schedule(new CloseTask(), 1000 * 60 * 15);
                 message = input.nextLine();
                 while (!message.equals(ProtocolStrings.STOP)) {
+                    timer.cancel();
                     timer = new Timer();
                     timer.schedule(new CloseTask(), 1000 * 60 * 15);
                     String[] send = message.split("#");
                     if (send[0].equals("SEND") && send.length == 3) {
+                        send[2] = send[2].replaceAll("\n", "");
                         if (send[1].equals("*")) {
                             server.sendAll(send[2], this, nickName);
                         } else {
@@ -91,6 +106,7 @@ public class ClientHandler extends Thread {
     }
 
     public class CloseTask extends TimerTask {
+
         @Override
         public void run() {
             try {

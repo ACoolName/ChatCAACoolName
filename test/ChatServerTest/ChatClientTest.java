@@ -108,35 +108,10 @@ public class ChatClientTest {
     }
     
     
-//    @Test (expected = IOException.class)
-//    public void testConnectWrongPort() throws IOException, InterruptedException {
-//        latch = new CountDownLatch(1);
-//
-//        ChatListener listen = new ChatListener() {
-//
-//            @Override
-//            public void messageArrived(String sender, String data) {
-//            }
-//
-//            @Override
-//            public void userListArrived(String[] userList) {
-//                msg = userList[0];
-//                latch.countDown();
-//            }
-//
-//            @Override
-//            public void stopArrived() {
-//            }
-//
-//        };
-//        client.connect(ip, 99999);
-//        client.registerChatListener(listen);
-//        client.start();
-//        client.send("CONNECT#User");
-//        latch.await(1000, TimeUnit.MILLISECONDS);
-//
-//        //assertEquals("User", msg);
-//    }
+    @Test (expected = IOException.class)
+    public void testConnectWrongPort() throws IOException, InterruptedException {
+        client.connect(ip, 9999);
+    }
     
      @Test
     public void testConnectTwoUsers() throws IOException, InterruptedException {
