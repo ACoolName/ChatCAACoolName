@@ -27,6 +27,11 @@ public class OnlineUsers implements HttpHandler {
         sb.append("</head>\n");
         sb.append("<body>\n");
         sb.append("<h2>Number of online users:" + onlineUsers + "</h2>\n");
+        sb.append("<ul>");
+        for(String s : cs.getOnlineUsers()){
+            sb.append("<li>" + s + "</li>");
+        }
+        sb.append("</ul>");
         sb.append("</body>\n");
         sb.append("</html>\n");
         String response = sb.toString();
